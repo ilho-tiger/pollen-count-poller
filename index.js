@@ -2,7 +2,6 @@
 
 const fetch = require("node-fetch");
 const cheerio = require("cheerio");
-const Papa = require("papaparse");
 const fs = require('fs');
 
 if (!process.env.slack_webhook) {
@@ -69,19 +68,45 @@ async function getBodyFromUrl(url) {
 }
 
 let getPollenData = async function (date) {
-    let dateFormat = getTwoDigitPaddedNumberString(date.getMonth() + 1) + "/" + getTwoDigitPaddedNumberString(date.getDate()) + "/" + date.getFullYear();
+    const dateFormat = date.getFullYear()
+        + "/" + getTwoDigitPaddedNumberString(date.getMonth() + 1)
+        + "/" + getTwoDigitPaddedNumberString(date.getDate());
+    const url = "http://www.atlantaallergy.com/pollen_counts/index/" + dateFormat;
+    const htmlBodyContent = await getDataFromWebsite(url);
 
-    const body = await getBodyFromUrl("http://www.atlantaallergy.com/pollen_counts/index/" + dateFormat);
+    let jsonData = {
+        pollenNum: 0
+    };
+    const $ = cheerio.load(htmlBodyContent);
 
-    console.log(body);
-    fs.writeFileSync('./data.html', body);
-    const $ = cheerio.load(body);
-    let resultString = "haha";
-    let jsonData = {};
- 
-    sendSlackMessage(resultString, slack_webhook);
+    $(".widget-pollen-count-full").each(function () {
+        let pollenNum = $(this).find(".pollen-num").text().trim();
+        if (pollenNum !== undefined && pollenNum !== "") {
+            jsonData.pollenNum = parseInt(pollenNum);
+        }
+        else {
+            console.log("Data not availble for " + dateFormat);
+        }
+    });
+
+    let message = "";
+    if (jsonData.pollenNum > 0) {
+        message = "Atlanta's Pollen Count for " + dateFormat + "\n" 
+            + "Data from <http://www.atlantaallergy.com/pollen_counts|Atlanta Allergy & Asthma>\n\n"
+            + "(Total) " + jsonData.pollenNum;
+    }
+    else {
+        message = "Data not available for " + dateFormat;
+    }
+    sendSlackMessage(message, slack_webhook);
     return jsonData;
 };
+
+async function getDataFromWebsite(url) {
+    const body = await getBodyFromUrl(url);
+    fs.writeFileSync('./data.html', body);
+    return body;
+}
 
 async function main() {
 
