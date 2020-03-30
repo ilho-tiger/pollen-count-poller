@@ -40,7 +40,7 @@ After defining environment variables as desired, run the script.
     onSlack >  Atlanta's Pollen Count for 2020/03/30
     onSlack >  Data from <http://www.atlantaallergy.com/pollen_counts|Atlanta Allergy & Asthma>
     onSlack >  
-    onSlack >  (Total) 7113
+    onSlack >  > *(Total) 7113 😡*
     { pollenNum: 7113 }
     ```
 

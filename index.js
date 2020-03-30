@@ -91,9 +91,13 @@ let getPollenData = async function (date) {
 
     let message = "";
     if (jsonData.pollenNum > 0) {
-        message = "Atlanta's Pollen Count for " + dateFormat + "\n" 
+        let emoji = "😄";
+        if (jsonData.pollenNum > 4000) emoji = "😡";
+        else if (jsonData.pollenNum > 2500) emoji = "🥵";
+        else if (jsonData.pollenNum > 1500) emoji = "😢";
+        message = "Atlanta's Pollen Count for " + dateFormat + "\n"
             + "Data from <http://www.atlantaallergy.com/pollen_counts|Atlanta Allergy & Asthma>\n\n"
-            + "(Total) " + jsonData.pollenNum;
+            + "> *(Total) " + jsonData.pollenNum + " " + emoji + "*";
     }
     else {
         message = "Data not available for " + dateFormat;
