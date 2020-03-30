@@ -1,0 +1,47 @@
+name: Pollen Count Poller
+
+on:
+  push:
+    branches:
+      - master
+  schedule:
+    - cron: '30 12 * * *'
+
+jobs:
+  retrieve_data:
+    name: retrieve_data
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Install node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: npm install
+        run: npm install
+
+      - name: Run poller script
+        run: node index.js
+        env:
+          CI: true
+          slack_webhook: ${{ secrets.slack_webhook }}
+          action_slack: ${{ secrets.action_slack }}
+
+      # - name: Save data
+      #   run: |
+      #     git config user.email "${{ secrets.action_commiter_email }}"
+      #     git config user.name "${{ secrets.action_commiter_name }}"
+      #     git remote add github "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git"
+      #     git pull github ${GITHUB_REF} --ff-only
+      #     git add ./result
+      #     git commit -m "chore(result): automated update of covid-19 daily data"
+      #     git push github HEAD:${GITHUB_REF}
