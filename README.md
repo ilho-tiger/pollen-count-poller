@@ -1,5 +1,7 @@
 # pollen-count-poller
 
+![Pollen Count Poller](https://github.com/ilho-tiger/pollen-count-poller/workflows/Pollen%20Count%20Poller/badge.svg)
+
 A little `Node.js` script that parses the website of [Atlanta Allergy & Asthma][Atlanta Allergy & Asthma] to get today's pollen count and pushes it to a Slack channel via [incoming webhook][incoming webhook]. 
 
 ## Build
