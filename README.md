@@ -57,7 +57,9 @@ After defining environment variables as desired, run the script.
 
 ## Scheduled trigger
 
-This repo has a scheduled trigger implemented with [Github Actions][actions] which is schduled to send the Slack message everyday 8:30am EDT (or 12:30pm UTC). The [Atlanta Allergy & Asthma] website usually updated for the day before 8:30am EDT, this should send the updated value for the day.
+This repo has a scheduled trigger implemented with [Github Actions][actions] which is schduled to send the Slack message everyday 8:30am EDT and 9:30am EDT  (or 12:30pm and 1:30pm UTC). The [Atlanta Allergy & Asthma] website usually updated for the day before 8:30am EDT, this should send the updated value for the day.
+
+_(in the week of April 13, the website had not been updated by 8:30am. To mitigate this, 9:30am schedule has added)_
 
 ```yaml
 on:
@@ -65,7 +67,7 @@ on:
     branches:
       - master
   schedule:
-    - cron: '30 12 * * *'
+    - cron: '30 12,13 * * *'
 ```
 
 [Atlanta Allergy & Asthma]: http://www.atlantaallergy.com/pollen_counts
