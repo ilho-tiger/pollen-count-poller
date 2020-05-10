@@ -1,5 +1,7 @@
 "use strict";
 
+const botEnabled = false;   // make sure .github workflow file's schedule uncommented when enabling this
+
 const fetch = require("node-fetch");
 const cheerio = require("cheerio");
 const fs = require('fs');
@@ -67,10 +69,14 @@ async function getBodyFromUrl(url) {
     return await response.text();
 }
 
-let getPollenData = async function (date) {
-    const dateFormat = date.getFullYear()
+function getDateFormat(date) {
+    return date.getFullYear()
         + "/" + getTwoDigitPaddedNumberString(date.getMonth() + 1)
         + "/" + getTwoDigitPaddedNumberString(date.getDate());
+}
+
+let getPollenData = async function (date) {
+    const dateFormat = getDateFormat(date);
     const url = "http://www.atlantaallergy.com/pollen_counts/index/" + dateFormat;
     const htmlBodyContent = await getDataFromWebsite(url);
 
@@ -114,10 +120,16 @@ async function getDataFromWebsite(url) {
 
 async function main() {
 
-    let today = new Date();
-    let pollenData = await getPollenData(today);
-
-    console.log(pollenData);
+    let today = new Date(); 
+    if (botEnabled) {
+        let pollenData = await getPollenData(today);
+        console.log(pollenData);
+    }
+    else {
+        let message = "Pollen Count bot disabled by 호랑이 :tiger: at " + getDateFormat(today) + "\n"
+            + "It will not send daily notification until reenabled.\nSee you next year! :wave:"
+        sendSlackMessage(message, slack_webhook);
+    }
 }
 
 main();
