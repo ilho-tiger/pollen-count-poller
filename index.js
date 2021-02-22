@@ -1,6 +1,6 @@
 "use strict";
 
-const botEnabled = false;   // make sure .github workflow file's schedule uncommented when enabling this
+const botEnabled = true;   // make sure .github workflow file's schedule uncommented when enabling this
 
 const fetch = require("node-fetch");
 const cheerio = require("cheerio");
