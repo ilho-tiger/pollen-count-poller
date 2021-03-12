@@ -5,7 +5,7 @@ on:
     branches:
       - master
   schedule:
-    - cron: '30 12,13 * * *'
+    - cron: '30 15 * * *'
 
 jobs:
   retrieve_data:
