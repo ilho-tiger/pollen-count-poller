@@ -19,7 +19,7 @@ The script reads from two environment variables:
 | Variable Name   | Type           | Notes                                                                |
 | --------------- | -------------- | -------------------------------------------------------------------- |
 | `slack_webhook` | `string` (url) | a Slack incoming webhook URL to push messages                        |
-| `action_slack`  | `true|false`   | send Slack message if `true`, redirect messages to console otherwise |
+| `action_slack`  | `true or false`   | send Slack message if `true`, redirect messages to console otherwise |
 
 The script will fail if `slack_webhook` is not defined, even if `action_slack` is set to `false`. 
 
