@@ -17,6 +17,8 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
+// trigger
+
 var (
 	botEnabled   = true
 	slackWebhook = os.Getenv("slack_webhook")
