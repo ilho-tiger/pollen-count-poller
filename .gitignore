@@ -108,3 +108,5 @@ dist
 
 data*.html
 data.csv
+
+.vscode/*
