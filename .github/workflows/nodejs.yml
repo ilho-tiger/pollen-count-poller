@@ -13,24 +13,17 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [22.x]
-
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      - name: Install node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+      - name: Install golang
+        uses: actions/setup-go@v2
         with:
-          node-version: ${{ matrix.node-version }}
+          go-version: 1.24.0
 
-      - name: npm install
-        run: npm install
-
-      - name: Run poller script
-        run: node index.js
+      - name: run crawler script
+        run: go run ./cmd/pollen-counter
         env:
           CI: true
           slack_webhook: ${{ secrets.slack_webhook }}
