@@ -83,6 +83,8 @@ let getPollenData = async function (date) {
     let jsonData = {
         pollenNum: 0
     };
+
+    console.log(htmlBodyContent);
     
     const $ = cheerio.load(htmlBodyContent);
 
