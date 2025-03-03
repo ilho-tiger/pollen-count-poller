@@ -11,7 +11,7 @@
             "mode": "auto",
             "program": "${workspaceFolder}/cmd/pollen-count",
             "env": {
-                "slack_webhook": "https://hooks.slack.com/services/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",
+                "slack_webhook": "https://hooks.slack.com/services/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",
                 "action_slack": "true"
             }
         },
