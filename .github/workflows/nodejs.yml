@@ -1,40 +1,28 @@
-name: Pollen Count Poller
+# filepath: /Users/isong/work/personal/pollen-count-poller/.github/workflows/main.yml
+name: CI
 
 on:
   push:
-    branches:
-      - master
-  schedule:
-    - cron: '30 15 * * *'
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
-  retrieve_data:
-    name: retrieve_data
-
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
+    - uses: actions/checkout@v2
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+    - run: npm install puppeteer
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: '1.16'
+    - run: go build -o pollen-count-poller ./cmd/pollen-count
+    - run: ./pollen-count-poller
 
-      - name: Install golang
-        uses: actions/setup-go@v2
-        with:
-          go-version: 1.24.0
-
-      - name: run crawler script
-        run: go run ./cmd/pollen-count
-        env:
-          CI: true
-          slack_webhook: ${{ secrets.slack_webhook }}
-          action_slack: ${{ secrets.action_slack }}
-
-      # - name: Save data
-      #   run: |
-      #     git config user.email "${{ secrets.action_commiter_email }}"
-      #     git config user.name "${{ secrets.action_commiter_name }}"
-      #     git remote add github "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git"
-      #     git pull github ${GITHUB_REF} --ff-only
-      #     git add ./result
-      #     git commit -m "chore(result): automated update of covid-19 daily data"
-      #     git push github HEAD:${GITHUB_REF}
+    

@@ -1,3 +1,4 @@
+// filepath: /Users/isong/work/personal/pollen-count-poller/cmd/pollen-count/main.go
 package main
 
 import (
@@ -9,6 +10,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"os/exec"
 	"strings"
 	"time"
 
@@ -79,16 +81,12 @@ func getTwoDigitPaddedNumberString(number int) string {
 }
 
 func getBodyFromURL(url string) (string, error) {
-	resp, err := http.Get(url)
+	cmd := exec.Command("node", "fetchContent.js", url)
+	output, err := cmd.Output()
 	if err != nil {
 		return "", err
 	}
-	defer resp.Body.Close()
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return "", err
-	}
-	return string(body), nil
+	return string(output), nil
 }
 
 func getDateFormat(date time.Time) string {
