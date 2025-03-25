@@ -6,11 +6,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
-	"os/exec"
 	"strings"
 	"time"
 
@@ -65,7 +63,7 @@ func sendSlackMessage(message, incomingWebhookURL string) {
 		defer resp.Body.Close()
 		if resp.StatusCode != http.StatusOK {
 			body, _ := io.ReadAll(resp.Body)
-			log.Println("Error:", string(body))
+			log.Println("Error on sending message to Slack:", string(body))
 		} else {
 			log.Println("Message sent")
 		}
@@ -83,12 +81,22 @@ func getTwoDigitPaddedNumberString(number int) string {
 }
 
 func getBodyFromURL(url string) (string, error) {
-	cmd := exec.Command("node", "fetchContent.js", url)
-	output, err := cmd.Output()
+	resp, err := http.Get(url)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("failed to fetch URL: %w", err)
 	}
-	return string(output), nil
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return "", fmt.Errorf("received non-200 response: %d", resp.StatusCode)
+	}
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return "", fmt.Errorf("failed to read response body: %w", err)
+	}
+
+	return string(body), nil
 }
 
 func getDateFormat(date time.Time) string {
@@ -145,7 +153,7 @@ func getDataFromWebsite(url string) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("failed to get body from url: %w", err)
 	}
-	err = ioutil.WriteFile("./data.html", []byte(body), 0644)
+	err = os.WriteFile("./data.html", []byte(body), 0644)
 	if err != nil {
 		return "", fmt.Errorf("failed to write file: %w", err)
 	}
