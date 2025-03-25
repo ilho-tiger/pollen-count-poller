@@ -110,7 +110,7 @@ func getPollenData(date time.Time) (map[string]int, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to get data from website: %w", err)
 	}
-	log.Println(htmlBodyContent)
+	// log.Println(htmlBodyContent)
 
 	jsonData := map[string]int{"pollenNum": 0}
 	doc, err := goquery.NewDocumentFromReader(strings.NewReader(htmlBodyContent))
