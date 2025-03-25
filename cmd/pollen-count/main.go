@@ -35,7 +35,7 @@ func main() {
 	if botEnabled {
 		pollenData, err := getPollenData(today)
 		if err != nil {
-			log.Println(err)
+			log.Println("failed to get pollen data: ", err)
 		} else {
 			fmt.Println(pollenData)
 		}
@@ -100,14 +100,14 @@ func getPollenData(date time.Time) (map[string]int, error) {
 	url := "http://www.atlantaallergy.com/pollen_counts/index/" + dateFormat
 	htmlBodyContent, err := getDataFromWebsite(url)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to get data from website: %w", err)
 	}
 	log.Println(htmlBodyContent)
 
 	jsonData := map[string]int{"pollenNum": 0}
 	doc, err := goquery.NewDocumentFromReader(strings.NewReader(htmlBodyContent))
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to create document from html body: %w", err)
 	}
 
 	doc.Find(".widget-pollen-count-full").Each(func(i int, s *goquery.Selection) {
@@ -143,11 +143,11 @@ func getPollenData(date time.Time) (map[string]int, error) {
 func getDataFromWebsite(url string) (string, error) {
 	body, err := getBodyFromURL(url)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("failed to get body from url: %w", err)
 	}
 	err = ioutil.WriteFile("./data.html", []byte(body), 0644)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("failed to write file: %w", err)
 	}
 	return body, nil
 }
